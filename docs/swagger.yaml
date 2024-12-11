@@ -1,0 +1,48 @@
+definitions:
+  apimodels.BaseResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  apimodels.FollowerCountRequest:
+    properties:
+      user_id:
+        type: string
+    type: object
+  apimodels.FollowerCountResponse:
+    properties:
+      count:
+        type: integer
+    type: object
+  apimodels.FollowerListRequest:
+    properties:
+      cursor:
+        type: string
+      user:
+        type: string
+    type: object
+  apimodels.FollowerListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/apimodels.FollowerObj'
+        type: array
+      next:
+        type: string
+    type: object
+  apimodels.FollowerObj:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths: {}
+swagger: "2.0"
