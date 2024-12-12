@@ -10,10 +10,10 @@ import (
 )
 
 type Config struct {
-	ServiceUrl string `mapstructure:"serviceUrl"`
-	LogLevel   string `mapstructure:"logLevel"`
+	ServiceUrl string `mapstructure:"service_url"`
+	LogLevel   string `mapstructure:"log_level"`
 	Proxy      string `mapstructure:"proxy"`
-	UserLib    string `mapstructure:"userLib"`
+	UserLib    string `mapstructure:"user_lib"`
 }
 
 var Global *Config
