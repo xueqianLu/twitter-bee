@@ -31,8 +31,9 @@ func (s *OpenAPI) startHttp(address string) error {
 	handler := apiHandler{conf: s.conf, backend: s.backend}
 	v1 := router.Group("/tbapi/v1")
 	{
-		v1.POST("/follower-count", handler.FollowerCount)
-		v1.POST("/follower-list", handler.FollowerList)
+		follower := v1.Group("/follower")
+		follower.POST("/count", handler.FollowerCount)
+		follower.POST("/list", handler.FollowerList)
 	}
 	// Swagger endpoint
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

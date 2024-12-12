@@ -1,6 +1,7 @@
 package node
 
 import (
+	"errors"
 	twitterscraper "github.com/imperatrona/twitter-scraper"
 	"github.com/pquerna/otp/totp"
 	log "github.com/sirupsen/logrus"
@@ -47,8 +48,14 @@ func generateTOTP(secret string) (string, error) {
 	return totp.GenerateCode(secret, time.Now())
 }
 
-func NewNode(conf *config.Config, account types.TwitterAccount) (*Node, error) {
+func NewNode(conf *config.Config, user string) (*Node, error) {
 	n := new(Node)
+	userlib := getUserLib(conf.UserLib)
+	if acc, ok := userlib[user]; ok {
+		n.account = acc
+	} else {
+		return nil, errors.New("user not found")
+	}
 	n.available = false
 	n.service = newService(n, conf)
 	n.spider = twitterscraper.NewWithTransport(newTransport(conf))
