@@ -38,12 +38,14 @@ func (c *BeeClient) GetFollowerCount(userID string) (*apimodels.FollowerCountRes
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	var result apimodels.FollowerCountResponse
+	var result apimodels.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
-	return &result, nil
+	data, _ := result.Data.(apimodels.FollowerCountResponse)
+
+	return &data, nil
 }
 
 func (c *BeeClient) GetFollowerList(user string, cursor string) (*apimodels.FollowerListResponse, error) {
@@ -63,10 +65,11 @@ func (c *BeeClient) GetFollowerList(user string, cursor string) (*apimodels.Foll
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	var result apimodels.FollowerListResponse
+	var result apimodels.BaseResponse
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
+	data, _ := result.Data.(apimodels.FollowerListResponse)
 
-	return &result, nil
+	return &data, nil
 }
