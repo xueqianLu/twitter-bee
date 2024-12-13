@@ -8,8 +8,10 @@ type ServiceBackend interface {
 }
 
 type TwitterAccount struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	F2A      string `json:"f2a"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Email     string `json:"email"`
+	F2A       string `json:"f2a"`
+	Token     string `json:"token"`
+	CSRFToken string `json:"csrf"`
 }

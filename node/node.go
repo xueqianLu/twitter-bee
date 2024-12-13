@@ -77,13 +77,43 @@ func (n *Node) Start() error {
 	return nil
 }
 
+func (n *Node) checkHealth() bool {
+	_, err := n.spider.GetProfile("bitcoin")
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 func (n *Node) login() error {
-	v := n.account
+	var v = n.account
+	var err error
 	if v.F2A != "" {
 		code, _ := generateTOTP(v.F2A)
-		return n.spider.AutoLogin(v.Username, v.Password, v.Email, code)
+		err = n.spider.AutoLogin(v.Username, v.Password, v.Email, code)
+	} else {
+		err = n.spider.AutoLogin(v.Username, v.Password, v.Email)
 	}
-	return n.spider.AutoLogin(v.Username, v.Password, v.Email)
+	if err != nil {
+		log.WithError(err).Error("login failed")
+	}
+	if v.Token != "" && v.CSRFToken != "" {
+		log.WithField("user", v.Username).Info("login with token")
+		err = n.bindToken(v.Token, v.CSRFToken)
+	}
+	return err
+}
+
+func (n *Node) bindToken(token, csrf string) error {
+	n.spider.SetAuthToken(twitterscraper.AuthToken{
+		Token:     token,
+		CSRFToken: csrf,
+	})
+	if n.spider.IsLoggedIn() {
+		return nil
+	} else {
+		return errors.New("login failed")
+	}
 }
 
 func (n *Node) loop() error {
@@ -96,7 +126,7 @@ func (n *Node) loop() error {
 		case <-n.quit:
 			return nil
 		case <-keepAlive.C:
-			n.available = n.spider.IsLoggedIn()
+			n.available = n.checkHealth()
 			log.WithField("available", n.available).Info("keep alive")
 		case <-login.C:
 			if !n.available {
