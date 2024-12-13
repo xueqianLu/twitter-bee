@@ -7,6 +7,7 @@ A twitter scraper client to simulate a real account and provide a restfull api t
 cp userlib.json.tml userlib.json
 ```
 Fill in the `userlib.json` with your twitter account information.
+
 2. build the service.
 ```shell
 make
