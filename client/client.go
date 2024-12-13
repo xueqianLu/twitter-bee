@@ -22,7 +22,7 @@ func NewBeeClient(baseURL string) *BeeClient {
 }
 
 func (c *BeeClient) GetFollowerCount(userID string) (*apimodels.FollowerCountResponse, error) {
-	url := fmt.Sprintf("%s/follower/count", c.BaseURL)
+	url := fmt.Sprintf("%s/tbapi/v1/follower/count", c.BaseURL)
 	reqBody, err := json.Marshal(apimodels.FollowerCountRequest{UserId: userID})
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (c *BeeClient) GetFollowerCount(userID string) (*apimodels.FollowerCountRes
 }
 
 func (c *BeeClient) GetFollowerList(user string, cursor string) (*apimodels.FollowerListResponse, error) {
-	url := fmt.Sprintf("%s/follower/list", c.BaseURL)
+	url := fmt.Sprintf("%s/tbapi/v1/follower/list", c.BaseURL)
 	reqBody, err := json.Marshal(apimodels.FollowerListRequest{User: user, Cursor: cursor})
 	if err != nil {
 		return nil, err
