@@ -14,6 +14,12 @@ type BeeClient struct {
 	HTTPClient *http.Client
 }
 
+type Response struct {
+	Code int             `json:"code"`
+	Data json.RawMessage `json:"data"`
+	Msg  string          `json:"message"`
+}
+
 func NewBeeClient(baseURL string) *BeeClient {
 	return &BeeClient{
 		BaseURL:    baseURL,
@@ -38,13 +44,15 @@ func (c *BeeClient) GetFollowerCount(userID string) (*apimodels.FollowerCountRes
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	var result apimodels.BaseResponse
+	var result Response
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
-	data, _ := result.Data.(apimodels.FollowerCountResponse)
-
+	var data apimodels.FollowerCountResponse
+	if err := json.Unmarshal(result.Data, &data); err != nil {
+		return nil, err
+	}
 	return &data, nil
 }
 
@@ -65,11 +73,13 @@ func (c *BeeClient) GetFollowerList(user string, cursor string) (*apimodels.Foll
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	var result apimodels.BaseResponse
+	var result Response
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
-	data, _ := result.Data.(apimodels.FollowerListResponse)
-
+	var data apimodels.FollowerListResponse
+	if err := json.Unmarshal(result.Data, &data); err != nil {
+		return nil, err
+	}
 	return &data, nil
 }
