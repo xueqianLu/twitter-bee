@@ -1,0 +1,8 @@
+[
+  {
+    "username":"username",
+    "password":"user-password",
+    "email":"user-email",
+    "f2a":"user-2fa-privatekey"
+  }
+]
