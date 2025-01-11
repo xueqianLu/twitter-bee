@@ -36,7 +36,7 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 		if err != nil {
 			spider.GetGuestToken()
 			tryCount++
-			fmt.Printf("GetProfile %s failed, err:%s\n", req.UserId, err.Error())
+			log.WithField("user", req.UserId).WithError(err).Error("GetProfile failed")
 			time.Sleep(time.Second * time.Duration(tryCount))
 			continue
 		}
@@ -55,6 +55,7 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 		Next: "",
 	}
 	if err := h.n.RateLimit.Wait(ctx); err != nil {
+		log.WithField("user", req.User).WithError(err).Error("FollowerList RateLimit Wait failed")
 		return res, fmt.Errorf("wait rate limit failed with error:%s", err.Error())
 	}
 
@@ -68,7 +69,7 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 		followers, next, err := spider.FetchFollowers(req.User, 1000, req.Cursor)
 		if err != nil {
 			try++
-			log.WithError(err).Error("FetchFollowers failed")
+			log.WithField("user", req.User).WithError(err).Error("FetchFollowers failed")
 			continue
 		}
 
