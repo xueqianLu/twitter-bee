@@ -27,7 +27,7 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 	}
 
 	for {
-		if tryCount >= 1 {
+		if tryCount >= 2 {
 			return res, fmt.Errorf("can not get the %v follower count", req.UserId)
 		}
 
@@ -36,6 +36,7 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 		if err != nil {
 			spider.GetGuestToken()
 			tryCount++
+			fmt.Printf("GetProfile %s failed, err:%s\n", req.UserId, err.Error())
 			time.Sleep(time.Second * time.Duration(tryCount))
 			continue
 		}
