@@ -27,7 +27,7 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 	}
 
 	for {
-		if tryCount > 10 {
+		if tryCount >= 1 {
 			return res, fmt.Errorf("can not get the %v follower count", req.UserId)
 		}
 
@@ -47,7 +47,8 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 }
 
 func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodels.FollowerListResponse, error) {
-	ctx := context.Background()
+	ctx, cancle := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancle()
 	res := apimodels.FollowerListResponse{
 		List: make([]apimodels.FollowerObj, 0),
 		Next: "",
@@ -62,7 +63,7 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 		spider       = h.n.spider
 	)
 
-	for !success && try < 10 {
+	for !success && try < 1 {
 		followers, next, err := spider.FetchFollowers(req.User, 1000, req.Cursor)
 		if err != nil {
 			try++
