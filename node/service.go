@@ -40,6 +40,11 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 			time.Sleep(time.Second * time.Duration(tryCount))
 			continue
 		}
+		log.WithFields(log.Fields{
+			"user":      req.UserId,
+			"userid":    fc.UserID,
+			"followers": fc.FollowersCount,
+		}).Info("GetProfile success")
 
 		res.Count = fc.FollowersCount
 
