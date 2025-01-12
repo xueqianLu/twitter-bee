@@ -61,7 +61,9 @@ func NewNode(conf *config.Config, user string) (*Node, error) {
 	n.spider = twitterscraper.NewWithTransport(newTransport(conf))
 	api := openapi.NewOpenAPI(conf, n.service)
 	n.api = api
-	n.RateLimit = rate.NewLimiter(rate.Every(15*time.Minute), 40)
+	// set a rate limit to 40 requests per 15 minutes.
+
+	n.RateLimit = rate.NewLimiter(rate.Every(15*time.Minute/40), 40)
 	n.quit = make(chan struct{})
 	return n, nil
 }
@@ -137,7 +139,7 @@ func (n *Node) loop() error {
 					log.WithField("user", n.account.Username).Info("login success")
 					n.available = true
 					login.Reset(time.Hour)
-					n.RateLimit.SetLimit(rate.Every(15 * time.Minute))
+					n.RateLimit.SetLimit(rate.Every(15 * time.Minute / 40))
 				}
 			}
 		}
