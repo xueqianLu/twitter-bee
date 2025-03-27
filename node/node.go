@@ -27,7 +27,7 @@ type Node struct {
 
 func newTransport(conf *config.Config) *http.Transport {
 	proxyURL, err := url.Parse(conf.Proxy)
-	if err == nil {
+	if len(conf.Proxy) > 0 && err == nil {
 		return &http.Transport{
 			Proxy:               http.ProxyURL(proxyURL),
 			MaxIdleConns:        100,
@@ -40,8 +40,19 @@ func newTransport(conf *config.Config) *http.Transport {
 				KeepAlive: 30 * time.Second,
 			}).DialContext,
 		}
+	} else {
+		return &http.Transport{
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 100,
+			IdleConnTimeout:     90 * time.Second,
+			TLSHandshakeTimeout: 10 * time.Second,
+			DisableCompression:  true,
+			DialContext: (&net.Dialer{
+				Timeout:   30 * time.Second,
+				KeepAlive: 30 * time.Second,
+			}).DialContext,
+		}
 	}
-	return nil
 }
 
 func generateTOTP(secret string) (string, error) {
