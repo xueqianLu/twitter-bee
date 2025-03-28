@@ -14,22 +14,22 @@ type apiHandler struct {
 	backend types.ServiceBackend
 }
 
-// @Summary Get Follower Count
-// @Description Get the count of followers for a specific account
+// @Summary Get User Profile
+// @Description Get the profile of a specific account
 // @Tags Twitter
 // @Accept json
 // @Produce json
-// @Param account body apimodels.FollowerCountRequest true "Account"
-// @Success 200 {object} apimodels.FollowerCountResponse
+// @Param account body apimodels.UserInfoRequest true "Account"
+// @Success 200 {object} apimodels.UserInfoResponse
 // @Failure 500 {object} apimodels.BaseResponse
-func (api apiHandler) FollowerCount(c *gin.Context) {
-	req := apimodels.FollowerCountRequest{}
+func (api apiHandler) UserProfile(c *gin.Context) {
+	req := apimodels.UserInfoRequest{}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		log.WithError(err).Error("FollowerCount ctx.ShouldBindJSON error")
+		log.WithError(err).Error("UserProfile ctx.ShouldBindJSON error")
 		api.errResponse(c, err)
 		return
 	}
-	if data, err := api.backend.FollowerCount(req); err != nil {
+	if data, err := api.backend.UserProfile(req); err != nil {
 		api.errResponse(c, err)
 	} else {
 		res := apimodels.BaseResponse{

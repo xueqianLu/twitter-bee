@@ -2,9 +2,11 @@ package rapid
 
 import (
 	"errors"
+	"github.com/xueqianLu/twitter-bee/config"
 	"github.com/xueqianLu/twitter-bee/types"
 	"math/rand"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -16,6 +18,14 @@ type ServiceBalancer struct {
 	userGetter []types.RAPIUserGetter
 	// followerGetter is a list of follower getter
 	followerGetter []types.RAPIFollowerGetter
+}
+
+func (b ServiceBalancer) GetFollowerGetterByStart(start int) []types.RAPIFollowerGetter {
+	start = start % len(b.followerGetter)
+	slice := make([]types.RAPIFollowerGetter, 0)
+	slice = append(slice, b.followerGetter[start:]...)
+	slice = append(slice, b.followerGetter[:start]...)
+	return slice
 }
 
 func (b ServiceBalancer) GetRandomUserGetter() []types.RAPIUserGetter {
@@ -36,15 +46,40 @@ func (b ServiceBalancer) GetRandomFollowerGetter() []types.RAPIFollowerGetter {
 	return slice
 }
 
-func GetAllServices(keylist []string, client *http.Client) ServiceBalancer {
+func GetAllServices(keylist []string, client *http.Client, conf *config.Config) ServiceBalancer {
 	user := make([]types.RAPIUserGetter, 0)
 	follower := make([]types.RAPIFollowerGetter, 0)
+	enableList := strings.Split(conf.EnableRAPI, ",")
+	var enableMap = make(map[string]bool)
+	for _, v := range enableList {
+		enableMap[v] = true
+	}
 
 	for _, key := range keylist {
-		user = append(user, &t1{key: key, client: client})
-		follower = append(follower, &t2{key: key, client: client})
-		follower = append(follower, &t3{key: key, client: client})
-		follower = append(follower, &t4{key: key, client: client})
+		{
+			m := &t1{key: key, client: client}
+			if enableMap[m.Name()] {
+				user = append(user, m)
+			}
+		}
+		{
+			m := &t2{key: key, client: client}
+			if enableMap[m.Name()] {
+				follower = append(follower, m)
+			}
+		}
+		{
+			m := &t3{key: key, client: client}
+			if enableMap[m.Name()] {
+				follower = append(follower, m)
+			}
+		}
+		{
+			m := &t4{key: key, client: client}
+			if enableMap[m.Name()] {
+				follower = append(follower, m)
+			}
+		}
 	}
 
 	return ServiceBalancer{

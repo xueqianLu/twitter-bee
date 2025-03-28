@@ -65,7 +65,7 @@ func NewNode(conf *config.Config) (*Node, error) {
 		Timeout:   20 * time.Second,
 		Transport: newTransport(conf),
 	}
-	n.getBalancer = rapid.GetAllServices(keylist, httpClient)
+	n.getBalancer = rapid.GetAllServices(keylist, httpClient, conf)
 	n.service = newService(n, conf)
 
 	n.available = true

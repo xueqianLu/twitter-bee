@@ -5,4 +5,5 @@ var DefaultConfig = Config{
 	ServiceUrl: "127.0.0.1:10001",
 	Proxy:      "",
 	KeyList:    "keylist.json",
+	EnableRAPI: "t1,t2",
 }

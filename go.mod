@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/imperatrona/twitter-scraper v0.0.15
+	github.com/hashicorp/golang-lru v0.5.4
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pquerna/otp v1.4.0
 	github.com/sirupsen/logrus v1.9.3
@@ -17,7 +17,6 @@ require (
 )
 
 require (
-	github.com/AlexEidt/Vidio v1.5.1 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect

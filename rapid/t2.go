@@ -18,6 +18,11 @@ type t2 struct {
 	client *http.Client
 }
 
+func (t *t2) Name() string {
+	// 100/month
+	return "t2"
+}
+
 func (t *t2) GetUserInfo(name string) (types.UserProfile, error) {
 	return types.UserProfile{}, ErrNotSupport
 }

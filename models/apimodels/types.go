@@ -1,11 +1,13 @@
 package apimodels
 
-type FollowerCountRequest struct {
+type UserInfoRequest struct {
 	UserName string `json:"username"`
 }
 
-type FollowerCountResponse struct {
-	Count int `json:"count"`
+type UserInfoResponse struct {
+	Follower int    `json:"follower"`
+	Name     string `json:"name"`
+	Id       string `json:"id"`
 }
 
 type FollowerObj struct {

@@ -14,6 +14,7 @@ type Config struct {
 	LogLevel   string `mapstructure:"log_level"`
 	Proxy      string `mapstructure:"proxy"`
 	KeyList    string `mapstructure:"key_list"`
+	EnableRAPI string `mapstructure:"enable_rapi"`
 }
 
 var Global *Config

@@ -29,10 +29,10 @@ func (s *OpenAPI) startHttp(address string) error {
 	router.Use(cors())
 	router.Use(ginLogrus())
 	handler := apiHandler{conf: s.conf, backend: s.backend}
-	v1 := router.Group("/tbapi/v1")
+	v1 := router.Group("/tbapi/v2")
 	{
 		follower := v1.Group("/follower")
-		follower.POST("/count", handler.FollowerCount)
+		follower.POST("/profile", handler.UserProfile)
 		follower.POST("/list", handler.FollowerList)
 	}
 	// Swagger endpoint

@@ -6,7 +6,7 @@ import (
 )
 
 type ServiceBackend interface {
-	FollowerCount(req apimodels.FollowerCountRequest) (apimodels.FollowerCountResponse, error)
+	UserProfile(req apimodels.UserInfoRequest) (apimodels.UserInfoResponse, error)
 	FollowerList(req apimodels.FollowerListRequest) (apimodels.FollowerListResponse, error)
 }
 
