@@ -17,7 +17,7 @@ tbee:
 	@echo "Done building."
 
 docker:
-	docker build -t tbee:${TAG} .
+	docker build -t tbee-rapid:${TAG} .
 
 clean:
 	rm -fr build/*
