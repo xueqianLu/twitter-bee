@@ -20,11 +20,17 @@ type ServiceBalancer struct {
 	followerGetter []types.RAPIFollowerGetter
 }
 
-func (b ServiceBalancer) GetFollowerGetterByStart(start int) []types.RAPIFollowerGetter {
-	start = start % len(b.followerGetter)
+func (b ServiceBalancer) GetFollowerGetterByStart(start types.RAPIFollowerGetter) []types.RAPIFollowerGetter {
+	var idx = 0
+	for i, v := range b.followerGetter {
+		if v == start {
+			idx = i
+			break
+		}
+	}
 	slice := make([]types.RAPIFollowerGetter, 0)
-	slice = append(slice, b.followerGetter[start:]...)
-	slice = append(slice, b.followerGetter[:start]...)
+	slice = append(slice, b.followerGetter[idx:]...)
+	slice = append(slice, b.followerGetter[:idx]...)
 	return slice
 }
 

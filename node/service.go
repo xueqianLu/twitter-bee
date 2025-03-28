@@ -51,7 +51,7 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 		slice = h.n.getBalancer.GetRandomFollowerGetter()
 	} else {
 		if v, ok := cache.Get(req.Cursor); ok {
-			idx := v.(int)
+			idx := v.(types.RAPIFollowerGetter)
 			slice = h.n.getBalancer.GetFollowerGetterByStart(idx)
 		} else {
 			return res, fmt.Errorf("invalid cursor")
@@ -60,8 +60,12 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 	for _, getter := range slice {
 		data, err := getter.GetFollowerIDs(req)
 		if err != nil {
+			log.WithError(err).Error("GetFollowerIDs error")
 			continue
 		} else {
+			if data.Next != "" && data.Next != "0" {
+				cache.Add(data.Next, getter)
+			}
 			return data, nil
 		}
 	}
