@@ -13,7 +13,7 @@ type Config struct {
 	ServiceUrl string `mapstructure:"service_url"`
 	LogLevel   string `mapstructure:"log_level"`
 	Proxy      string `mapstructure:"proxy"`
-	UserLib    string `mapstructure:"user_lib"`
+	KeyList    string `mapstructure:"key_list"`
 }
 
 var Global *Config

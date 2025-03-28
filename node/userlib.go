@@ -2,18 +2,13 @@ package node
 
 import (
 	"encoding/json"
-	"github.com/xueqianLu/twitter-bee/types"
-	"io/ioutil"
+	"os"
 )
 
-func getUserLib(path string) map[string]types.TwitterAccount {
-	// read file from path and unmarshal json to map.
-	res := make(map[string]types.TwitterAccount)
-	userlist := make([]types.TwitterAccount, 0)
-	data, _ := ioutil.ReadFile(path)
-	_ = json.Unmarshal(data, &userlist)
-	for _, user := range userlist {
-		res[user.Username] = user
-	}
-	return res
+func getKeyList(path string) []string {
+	// read file from path and unmarshal json to slice.
+	data, _ := os.ReadFile(path)
+	var keylist []string
+	_ = json.Unmarshal(data, &keylist)
+	return keylist
 }

@@ -1,7 +1,7 @@
 package apimodels
 
 type FollowerCountRequest struct {
-	UserId string `json:"user_id"`
+	UserName string `json:"username"`
 }
 
 type FollowerCountResponse struct {
@@ -15,7 +15,8 @@ type FollowerObj struct {
 }
 
 type FollowerListRequest struct {
-	User   string `json:"user"`
+	Name   string `json:"name"`
+	ID     string `json:"id"`
 	Cursor string `json:"cursor"`
 }
 

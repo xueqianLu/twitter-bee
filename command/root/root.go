@@ -15,9 +15,8 @@ import (
 )
 
 var (
-	cfgFile  string
-	userName string
-	rootCmd  = &cobra.Command{
+	cfgFile string
+	rootCmd = &cobra.Command{
 		Use:   "tbee [command]",
 		Short: "Tbee is a simulator to act as a twitter user.",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -41,7 +40,6 @@ func init() {
 	rootCmd.PersistentFlags().String("server", config.DefaultConfig.ServiceUrl, "service address")
 	rootCmd.PersistentFlags().String("log-level", config.DefaultConfig.LogLevel, "log level, default is info")
 	rootCmd.PersistentFlags().String("proxy", config.DefaultConfig.Proxy, "http proxy address")
-	rootCmd.PersistentFlags().StringVar(&userName, "user", "", "user name")
 }
 
 func bindFlags(cmd *cobra.Command) {
@@ -60,7 +58,7 @@ func runCommand(cmd *cobra.Command, _ []string) {
 	setlog(cfg.LogLevel)
 	log.WithField("config", cfg).Info("load config success")
 
-	server, err := node.NewNode(cfg, userName)
+	server, err := node.NewNode(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

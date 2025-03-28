@@ -8,8 +8,6 @@ RUN apk update && \
 
 WORKDIR /build
 COPY . /build/twitter-bee
-
-RUN git clone https://github.com/xueqianLu/twitter-scraper /build/twitter-scraper
 RUN cd /build/twitter-bee && make
 
 FROM alpine
