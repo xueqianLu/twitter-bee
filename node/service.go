@@ -16,7 +16,7 @@ func (h handleService) FollowerCount(req apimodels.FollowerCountRequest) (apimod
 	res := apimodels.FollowerCountResponse{
 		Count: 0,
 	}
-	for _, getter := range h.n.userGetter {
+	for _, getter := range h.n.getBalancer.GetRandomUserGetter() {
 		info, err := getter.GetUserInfo(req.UserName)
 		if err != nil {
 			continue
@@ -40,7 +40,7 @@ func (h handleService) FollowerList(req apimodels.FollowerListRequest) (apimodel
 		List: make([]apimodels.FollowerObj, 0),
 		Next: "",
 	}
-	for _, getter := range h.n.followerGetter {
+	for _, getter := range h.n.getBalancer.GetRandomFollowerGetter() {
 		data, err := getter.GetFollowerIDs(req)
 		if err != nil {
 			continue

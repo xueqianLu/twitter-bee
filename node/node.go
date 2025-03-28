@@ -7,7 +7,6 @@ import (
 	"github.com/xueqianLu/twitter-bee/config"
 	"github.com/xueqianLu/twitter-bee/openapi"
 	"github.com/xueqianLu/twitter-bee/rapid"
-	"github.com/xueqianLu/twitter-bee/types"
 	"net"
 	"net/http"
 	"net/url"
@@ -15,12 +14,11 @@ import (
 )
 
 type Node struct {
-	api            *openapi.OpenAPI
-	service        *handleService
-	userGetter     []types.RAPIUserGetter
-	followerGetter []types.RAPIFollowerGetter
-	available      bool
-	quit           chan struct{}
+	api         *openapi.OpenAPI
+	service     *handleService
+	getBalancer rapid.ServiceBalancer
+	available   bool
+	quit        chan struct{}
 }
 
 func newTransport(conf *config.Config) *http.Transport {
@@ -67,10 +65,8 @@ func NewNode(conf *config.Config) (*Node, error) {
 		Timeout:   20 * time.Second,
 		Transport: newTransport(conf),
 	}
-	user, follower := rapid.GetAllServices(keylist, httpClient)
+	n.getBalancer = rapid.GetAllServices(keylist, httpClient)
 	n.service = newService(n, conf)
-	n.userGetter = user
-	n.followerGetter = follower
 
 	n.available = true
 	api := openapi.NewOpenAPI(conf, n.service)
@@ -91,4 +87,8 @@ func (n *Node) Start() error {
 
 func (n *Node) Stop() {
 	close(n.quit)
+}
+
+func (n *Node) Balancer() rapid.ServiceBalancer {
+	return n.getBalancer
 }
