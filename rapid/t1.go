@@ -59,8 +59,67 @@ func (t *t1) GetUserInfo(name string) (types.UserProfile, error) {
 
 }
 
-func (t *t1) GetFollowerIDs(req apimodels.FollowerListRequest) (apimodels.FollowerListResponse, error) {
-	return apimodels.FollowerListResponse{}, ErrNotSupport
+func (t *t1) GetFollowerIDs(param apimodels.FollowerListRequest) (apimodels.FollowerListResponse, error) {
+	type response struct {
+		FollowersCount int `json:"followers_count"`
+		Followers      []struct {
+			UserId          string      `json:"user_id"`
+			ScreenName      string      `json:"screen_name"`
+			StatusesCount   int         `json:"statuses_count"`
+			FollowersCount  int         `json:"followers_count"`
+			FriendsCount    int         `json:"friends_count"`
+			MediaCount      int         `json:"media_count"`
+			CreatedAt       string      `json:"created_at"`
+			Location        string      `json:"location"`
+			BlueVerified    bool        `json:"blue_verified"`
+			Verified        interface{} `json:"verified"`
+			Website         interface{} `json:"website"`
+			Name            string      `json:"name"`
+			Affiliates      interface{} `json:"affiliates"`
+			BusinessAccount bool        `json:"business_account"`
+		} `json:"followers"`
+		NextCursor string `json:"next_cursor"`
+		Status     string `json:"status"`
+		MoreUsers  bool   `json:"more_users"`
+	}
+	var url string
+	if param.Cursor == "" {
+		url = fmt.Sprintf("https://twitter-api45.p.rapidapi.com/followers.php?screenname=%s",
+			param.Name)
+	} else {
+		url = fmt.Sprintf("https://twitter-api45.p.rapidapi.com/followers.php?screenname=%s&cursor=%s",
+			param.Name, param.Cursor)
+	}
+
+	req, _ := http.NewRequest("GET", url, nil)
+
+	req.Header.Add("x-rapidapi-key", t.key)
+	req.Header.Add("x-rapidapi-host", "twitter-api45.p.rapidapi.com")
+
+	res, err := t.client.Do(req)
+	if err != nil {
+		return apimodels.FollowerListResponse{}, err
+	}
+
+	defer res.Body.Close()
+
+	body, _ := io.ReadAll(res.Body)
+	var decode response
+	if err = json.Unmarshal(body, &decode); err != nil {
+		return apimodels.FollowerListResponse{}, err
+	}
+	list := make([]apimodels.FollowerObj, len(decode.Followers))
+	for i, follower := range decode.Followers {
+		list[i] = apimodels.FollowerObj{
+			ID:       follower.UserId,
+			Name:     follower.Name,
+			UserName: follower.ScreenName,
+		}
+	}
+	return apimodels.FollowerListResponse{
+		List: list,
+		Next: decode.NextCursor,
+	}, nil
 }
 
 func (t *t1) Setup(client *http.Client) error {
